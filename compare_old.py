@@ -1,7 +1,7 @@
-import numpy as np
+class compare:
+  
 
-def IsClose(A,B,th):
-
+  def IsClose(A,B,th):
     C = [A[0]-B[0],A[1]-B[1]]
     dist = np.linalg.norm(C)
     if(abs(dist)<(th) ):
@@ -9,8 +9,8 @@ def IsClose(A,B,th):
     else:
       return False
 
-def CheckBad(Vmove,Omove,th):
-    
+  def CheckBad(Vmove,Omove,th):
+
     if(len(Vmove)>=len(Omove)):
       observation = len(Omove)
     else:
@@ -29,7 +29,7 @@ def CheckBad(Vmove,Omove,th):
         V_ppoints = Vmove[m,:,n]
         O_points  = Omove[m,:,n]
 
-        if(IsClose(V_ppoints,O_points,th) or IsOutRange(V_ppoints) or IsNegative(V_ppoints)):
+        if(compare.IsClose(V_ppoints,O_points,th) or compare.IsOutRange(V_ppoints) or compare.IsNegative(V_ppoints)):
           count = count+1
           n=pt # get outta loop
           index[m]=0
@@ -42,29 +42,28 @@ def CheckBad(Vmove,Omove,th):
 
     return count,index
 
-def GetLabel(Vmove,Omove):
-
-    count,index = CheckBad(Vmove,Omove)
+  def GetLabel(Vmove,Omove):
+    count,index = compare.CheckBad(Vmove,Omove)
     return index
 
-def Bad_Counter(Vmove,Omove,thld):
+  def Bad_Counter(Vmove,Omove,thld):
 
     bad_count = np.zeros(len(thld))
     i=0
     while(i<len(bad_count)):
-      bad_count[i] = CheckBad(Vmove,Omove,thhld[i])[0]
+      bad_count[i] = compare.CheckBad(Vmove,Omove,thhld[i])[0]
       i=i+1
 
     return bad_count
 
-def IsOutRange(A):
+  def IsOutRange(A):
 
     if(A[0]>1 or A[1]>1):
       return True
     else:
       return False
 
-def IsNegative(A):
+  def IsNegative(A):
 
     if(A[0]<0 or A[1]<0):
       return True
@@ -74,7 +73,7 @@ def IsNegative(A):
 
 
 
-def checkarray(move):
+  def checkarray(move):
 
     '''
     input: move trajectory
@@ -101,7 +100,7 @@ def checkarray(move):
 
     return False
 
-def CheckBadRange(array):
+  def CheckBadRange(array):
     '''
     input: a set of generated trajectories
 
@@ -123,7 +122,7 @@ def CheckBadRange(array):
       moveX = array[i,0,:]  # X coordinates of trajectory
       moveY = array[i,1,:]  # Y coordinates of trajectory
 
-      if (checkarray(moveX) or checkarray(moveY)):
+      if (compare.checkarray(moveX) or compare.checkarray(moveY)):
         count = count+1
         index.append(i)
         i=i+1
@@ -135,18 +134,16 @@ def CheckBadRange(array):
     return count, index
 
 
-def StaticCheckBad(Vmove,Opos,th):
-
+  def StaticCheckBad(Vmove,Opos,th):
     """
     Return an array of integers.
 
     :param kind: Optional "kind" of ingredients.
-    :raise: If the kind is invalid.
-    :return: Bad move counts, Array of indices for bad trajectories.
+    :type kind: Array[float] 
+    :raise lumache.InvalidKindError: If the kind is invalid.
+    :return: bad move counts, The indices for bad trajectories.
     :rtype: int , Array[int]
-
     """
-
 
     observation = len(Vmove)
     pt = len(Vmove[0][0]) # number of points in a traj
@@ -161,7 +158,7 @@ def StaticCheckBad(Vmove,Opos,th):
         V_ppoints = Vmove[m,:,n]
         O_points  = Opos[m,:]
 
-        if(IsClose(V_ppoints,O_points,th) or IsOutRange(V_ppoints) or IsNegative(V_ppoints)):
+        if(compare.IsClose(V_ppoints,O_points,th) or compare.IsOutRange(V_ppoints) or compare.IsNegative(V_ppoints)):
 
           count = count+1
           n=pt # get outta loop
