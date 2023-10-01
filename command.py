@@ -46,6 +46,12 @@ class command:
 
 
     def Cmove(Is,Gs,P1,P2):
+       
+       '''
+       This function generates trajectory by performing interpolation
+       
+       
+       '''
 
        Ix  = Is[0]
        Iy  = Is[1]

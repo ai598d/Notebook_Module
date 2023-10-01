@@ -53,6 +53,50 @@
 </dl>
 </dd></dl>
 
+<p>you can use the <code class="docutils literal notranslate"><span class="pre">build_so_model.call_existing_code(units,</span> <span class="pre">activation,</span> <span class="pre">dropout,</span> <span class="pre">lr)</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="build_so_model.call_existing_code">
+<span class="sig-prename descclassname"><span class="pre">build_so_model.</span></span><span class="sig-name descname"><span class="pre">call_existing_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#build_so_model.call_existing_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a neural network model.</p>
+<p>This skeleton model is used as a framwork for actual model. Hyper parameters: unit, activation func, learning rate are passed as an argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kind</strong> – layer_units, activation function type, dropout, learning rate.</p>
+</dd>
+<dt class="field-even">Raise<span class="colon">:</span></dt>
+<dd class="field-even"><p>If the kind is invalid.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bad move counts, Array of indices for bad trajectories.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>keras model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>you can use the <code class="docutils literal notranslate"><span class="pre">build_so_model.build_model(hp)</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="build_so_model.build_model">
+<span class="sig-prename descclassname"><span class="pre">build_so_model.</span></span><span class="sig-name descname"><span class="pre">build_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#build_so_model.build_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a complete neural network model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kind</strong> – layer_units, activation function type, dropout, learning rate.</p>
+</dd>
+<dt class="field-even">Raise<span class="colon">:</span></dt>
+<dd class="field-even"><p>If the kind is invalid.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bad move counts, Array of indices for bad trajectories.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>keras model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>you can use the <code class="docutils literal notranslate"><span class="pre">command.Cmove(Is,Gs,P1,P2)</span></code> function:</p>
 </section>
 
 
@@ -75,6 +119,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#compare.StaticCheckBad"><code class="docutils literal notranslate"><span class="pre">StaticCheckBad()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_so_model.call_existing_code"><code class="docutils literal notranslate"><span class="pre">call_existing_code()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build_so_model.build_model"><code class="docutils literal notranslate"><span class="pre">build_model()</span></code></a></li>
 </ul>
 </li>
 </ul>
