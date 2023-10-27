@@ -48,12 +48,12 @@ def GetLabel(Vmove,Omove):
     return index
 
 def Bad_Counter(Vmove,Omove,thld):
-
+    
     bad_count = np.zeros(len(thld))
     i=0
     while(i<len(bad_count)):
-      bad_count[i] = CheckBad(Vmove,Omove,thhld[i])[0]
-      i=i+1
+        bad_count[i] = CheckBad(Vmove,Omove,thld[i])[0]
+        i=i+1
 
     return bad_count
 
@@ -155,24 +155,23 @@ def StaticCheckBad(Vmove,Opos,th):
     count = 0
     index = np.ones([observation])
     while(m<observation):
+        
+        while(n<pt):
+            V_ppoints = Vmove[m,:,n]
+            O_points  = Opos[m,:]
 
-
-      while(n<pt):
-        V_ppoints = Vmove[m,:,n]
-        O_points  = Opos[m,:]
-
-        if(IsClose(V_ppoints,O_points,th) or IsOutRange(V_ppoints) or IsNegative(V_ppoints)):
-
-          count = count+1
-          n=pt # get outta loop
-          index[m]=0
-
-        else:
-
-          count = count
-          n=n+1
-
-      n=0
-      m=m+1
-
+            if(IsClose(V_ppoints,O_points,th) or IsOutRange(V_ppoints) or IsNegative(V_ppoints)):
+                
+                count = count+1
+                n=pt # get outta loop
+                index[m]=0
+            else:
+                
+                count = count
+                n=n+1
+        
+        n=0
+        print(m)
+        m=m+1
+    
     return count,index
