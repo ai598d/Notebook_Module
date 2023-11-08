@@ -5,7 +5,7 @@ Created on Tue Oct 10 15:42:00 2023
 @author: ai598
 """
 
-from command import Cmove
+from command import Cmove2
 from compare import StaticCheckBad
 
 import compare as cp
@@ -18,7 +18,15 @@ import pandas as pd
 import numpy as np
 import keras
 import matplotlib.pyplot as plt
+import os as os 
 
+import scipy as sc
+from scipy import signal
+
+#%%
+
+path = 'C:\\Users\\ai598\\Thesis\\Notebook_Modules'
+os.chdir(path)
 
 # =============================================================================
 # DATA PRE PROCESSING
@@ -76,22 +84,22 @@ learned_model4 = keras.models.load_model('my_model4')  # LOAD MODEL
 # =============================================================================
 # PREDICT
 # =============================================================================
-
-learned_Pred_M1x = learned_model1.predict(InputArray[:2000])
-learned_Pred_M1y = learned_model2.predict(InputArray[:2000])
-learned_Pred_M2x = learned_model3.predict(InputArray[:2000])
-learned_Pred_M2y = learned_model4.predict(InputArray[:2000])
-
-
-rand_pred_M1x = rand_model1.predict(InputArray[:2000])
-rand_pred_M1y = rand_model2.predict(InputArray[:2000])
-rand_pred_M2x = rand_model3.predict(InputArray[:2000])
-rand_pred_M2y = rand_model4.predict(InputArray[:2000])
+items =8000
+learned_Pred_M1x = learned_model1.predict(InputArray[:items])
+learned_Pred_M1y = learned_model2.predict(InputArray[:items])
+learned_Pred_M2x = learned_model3.predict(InputArray[:items])
+learned_Pred_M2y = learned_model4.predict(InputArray[:items])
 
 
+rand_pred_M1x = abs(rand_model1.predict(InputArray[:items]))
+rand_pred_M1y = abs(rand_model2.predict(InputArray[:items]))
+rand_pred_M2x = abs(rand_model3.predict(InputArray[:items]))
+rand_pred_M2y = abs(rand_model4.predict(InputArray[:items]))
 
 
+factor = 100/items
 
+#%%
 
 
 # =============================================================================
@@ -100,21 +108,21 @@ rand_pred_M2y = rand_model4.predict(InputArray[:2000])
 
 i = 0
 
-MaxIt = InputArray.shape[0]
+MaxIt = InputArray[:items].shape[0]
 Learned_Move = []
 Rand_Move = []
 
 while(i<MaxIt):
-    Is = InputArray[0,0:2]
-    Gs = InputArray[0,2:4]
-    Ms1 = np.array([learned_Pred_M1x[0],learned_Pred_M1y[0] ])
-    Ms2 = np.array([learned_Pred_M2x[0],learned_Pred_M2y[0]])
-    Learned_traj = Cmove(Is,Gs,Ms1,Ms2)
+    Is = np.array(InputArray[i,0:2],dtype='float64')
+    Gs = np.array(InputArray[i,2:4],dtype='float64')
+    Ms1 = np.array([learned_Pred_M1x[i],learned_Pred_M1y[i] ],dtype='float64')
+    Ms2 = np.array([learned_Pred_M2x[i],learned_Pred_M2y[i]],dtype='float64')
+    Learned_traj = Cmove2(Is,Ms1,Ms2,Gs,100)
     Learned_Move.append(Learned_traj)
     
-    rand_Ms1 = np.array([rand_pred_M1x[0],rand_pred_M1y[0] ])
-    rand_Ms2 = np.array([rand_pred_M2x[0],rand_pred_M2y[0] ])
-    rand_traj = Cmove(Is,Gs,rand_Ms1 ,rand_Ms2)
+    rand_Ms1 = np.array([rand_pred_M1x[i],rand_pred_M1y[i] ],dtype='float64')
+    rand_Ms2 = np.array([rand_pred_M2x[i],rand_pred_M2y[i] ],dtype='float64')
+    rand_traj = Cmove2(Is,rand_Ms1 ,rand_Ms2,Gs,100)
     Rand_Move.append(rand_traj)
     i=i+1
 
@@ -122,18 +130,39 @@ while(i<MaxIt):
 Learned_Trajectory = np.asarray(Learned_Move)
 Rand_Trajectory = np.asarray(Rand_Move)
 
+
+Learned_Trajectory = Learned_Trajectory[:,:,:,0]
+Rand_Trajectory = Rand_Trajectory[:,:,:,0]
+
 obstacle = InputArray[:,4:6]
 
+
+#%%
+
+# plot Trajectory
+
+xL = sc.signal.decimate(Learned_Trajectory[800,0,:],4)
+yL = sc.signal.decimate(Learned_Trajectory[800,1,:],4)
+
+xR = sc.signal.decimate(Rand_Trajectory[800,0,:] ,4) 
+
+yR = sc.signal.decimate(Rand_Trajectory[800,1,:] ,4) 
+
+plt.plot(xL,yL ,'*')
+
+plt.plot(xR ,yR, '*' )
+
+#%%
 # =============================================================================
 # Check Hit Miss
 # =============================================================================
 
-Lcount, Lindex = StaticCheckBad(Learned_Trajectory,obstacle,.3)
+Lcount, Lindex = StaticCheckBad(Learned_Trajectory,obstacle,.2)
 
-Rcount, Rindex = StaticCheckBad(Rand_Trajectory,obstacle,.3)
+Rcount, Rindex = StaticCheckBad(Rand_Trajectory,obstacle,.2)
 
 
-
+#%%
 fig, ax = plt.subplots()
 
 models = ['Learned Model', 'Random Model']
@@ -145,6 +174,47 @@ ax.bar(models, counts, label=bar_labels, color=bar_colors)
 
 ax.set_ylabel('Number of hits')
 ax.set_title('Hit-Miss comparison between models')
-ax.legend(title='hit miss')
+#ax.legend([['Learned model', 'Random Model'] ])
 
 plt.show()
+
+#%%
+
+
+Lc = []
+
+Rc = []
+
+th = np.linspace(0,1,50)
+
+i = 0
+
+maxit = len(th)
+
+while(i<maxit):
+    
+    Lcount, Lindex = StaticCheckBad(Learned_Trajectory,obstacle,th[i])
+
+    Rcount, Rindex = StaticCheckBad(Rand_Trajectory,obstacle,th[i])
+    
+    Lc.append(Lcount)
+    
+    Rc.append(Rcount)
+    
+    i=i+1
+    
+#%%
+    
+Lc = np.asarray(Lc)*factor
+Rc = np.asarray(Rc)*factor
+
+# plot Trajectory
+
+plt.figure()
+plt.plot(th,Lc)
+plt.plot(th,Rc)
+plt.xlabel('collision threshold')
+plt.ylabel('bad count %')
+plt.legend(['learned','Random'])
+plt.show()
+
