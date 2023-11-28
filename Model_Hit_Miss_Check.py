@@ -74,10 +74,10 @@ rand_model4 = call_existing_code (10,'relu',.1, 1e-1)
 # LOAD LEARNED MODEL
 # =============================================================================
 
-learned_model1 = keras.models.load_model('my_model1')  # LOAD MODEL
-learned_model2 = keras.models.load_model('my_model2')  # LOAD MODEL
-learned_model3 = keras.models.load_model('my_model3')  # LOAD MODEL
-learned_model4 = keras.models.load_model('my_model4')  # LOAD MODEL
+learned_model1 = keras.models.load_model('my_newmodel1')  # LOAD MODEL
+learned_model2 = keras.models.load_model('my_newmodel2')  # LOAD MODEL
+learned_model3 = keras.models.load_model('my_newmodel3')  # LOAD MODEL
+learned_model4 = keras.models.load_model('my_newmodel4')  # LOAD MODEL
 
 
 

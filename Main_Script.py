@@ -1,9 +1,58 @@
+
+
+import os as os
+#%%
+# initialize working directory
+
+path = "C:\\Users\\ai598\\Thesis\\Notebook_Modules"
+
+os.chdir(path)
+
 import dependencies
 from build_so_model import build_model
 from build_so_model import train_model
 import pandas as pd
 import numpy as np
 
+from DataGen import Data_Array
+from DataGen import Scale_Data
+from DataGen import Filter_Good_Data
+from DataGen import CSV_to_DataArray
+from command import Cmove2
+from compare import StaticCheckBad
+#%%
+
+
+myinput,mytarget = CSV_to_DataArray('TD_11252023.csv',array=True)
+
+parts = 100
+th = .1
+
+good_input, good_target, count = Filter_Good_Data(myinput,mytarget,parts,th)
+
+
+#%%
+
+myinput = good_input
+mytarget= good_target
+
+inplength = len(good_input)
+halflength = int(inplength/2)
+
+
+Training_Input   = myinput[0:halflength]
+Training_Target1 = mytarget[0:halflength,0]
+Training_Target2 = mytarget[0:halflength,1]
+Training_Target3 = mytarget[0:halflength,2]
+Training_Target4 = mytarget[0:halflength,3]
+
+Test_Input = myinput[halflength:inplength]
+Test_Target1 = mytarget[halflength:inplength ,0]
+Test_Target2 = mytarget[halflength:inplength ,1]
+Test_Target3 = mytarget[halflength:inplength ,2]
+Test_Target4 = mytarget[halflength:inplength ,3]
+
+#%%
 
 
 df = pd.read_csv('StaticMoveData2.csv')  # import data
@@ -67,6 +116,8 @@ test_targets3 = Y_good3[ind1+1:ind2]
 train_targets4 = Y_good4[0:ind1]
 test_targets4 = Y_good4[ind1+1:ind2]
 
+#%%
+
 # =============================================================================
 # SET KERAS TUNER INSTANCES
 # =============================================================================
@@ -114,24 +165,24 @@ tuner4 = keras_tuner.RandomSearch(
 )
 
 
-
+#%%
 # =============================================================================
 # SEARCH TUNER & BUILD MODEL
 # =============================================================================
 
 
 # tune the tuner for best hyper-param (For Target 1)
-tuner1.search(train_data, train_targets1, epochs=100, validation_data=(test_data, test_targets1))
+tuner1.search(Training_Input, Training_Target1, epochs=100, validation_data=(Test_Input, Test_Target1))
 
 
 # # tune the tuner for best hyper-param (For Target 2)
-tuner2.search(train_data, train_targets2, epochs=100, validation_data=(test_data, test_targets2))
+tuner2.search(Training_Input, Training_Target2, epochs=100, validation_data=(Test_Input, Test_Target2))
 
 # # tune the tuner for best hyper-param (For Target 3)
-tuner3.search(train_data, train_targets3, epochs=100, validation_data=(test_data, test_targets3))
+tuner3.search(Training_Input, Training_Target3, epochs=100, validation_data=(Test_Input, Test_Target3))
 
 # # tune the tuner for best hyper-param ((For Target 4)
-tuner4.search(train_data, train_targets4, epochs=100, validation_data=(test_data, test_targets4))
+tuner4.search(Training_Input, Training_Target4, epochs=100, validation_data=(Test_Input, Test_Target4))
 
 
 
@@ -152,22 +203,22 @@ model4 = build_model(best_hps4[0])
 # # 
 # # =============================================================================
 
-all_mae_hist1 = train_model(train_data,train_targets1,model1,k=2,num_epochs = 100)
-all_mae_hist2 = train_model(train_data,train_targets1,model2,k=2,num_epochs = 100)
-all_mae_hist3 = train_model(train_data,train_targets1,model3,k=2,num_epochs = 100)
-all_mae_hist4 = train_model(train_data,train_targets1,model4,k=2,num_epochs = 100)
+all_mae_hist1 = train_model(Training_Input, Training_Target1,model1,k=2,num_epochs = 100)
+all_mae_hist2 = train_model(Training_Input, Training_Target2,model2,k=2,num_epochs = 100)
+all_mae_hist3 = train_model(Training_Input, Training_Target3,model3,k=2,num_epochs = 100)
+all_mae_hist4 = train_model(Training_Input, Training_Target4,model4,k=2,num_epochs = 100)
 
 
 # =============================================================================
 # SAVE MODEL
 # =============================================================================
-model1.save('my_model1') # Save Model
+model1.save('my_newmodel1') # Save Model
 
-model2.save('my_model2') # Save Model
+model2.save('my_newmodel2') # Save Model
 
-model3.save('my_model3') # Save Model
+model3.save('my_newmodel3') # Save Model
 
-model4.save('my_model4') # Save Model
+model4.save('my_newmodel4') # Save Model
 
 
 

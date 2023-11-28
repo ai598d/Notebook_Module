@@ -153,7 +153,7 @@ def StaticCheckBad(Vmove,Opos,th):
     m = 0
     n = 0
     count = 0
-    index = np.ones([observation])
+    index = []
     while(m<observation):
         
         while(n<pt):
@@ -164,7 +164,7 @@ def StaticCheckBad(Vmove,Opos,th):
                 
                 count = count+1
                 n=pt # get outta loop
-                index[m]=0
+                index.append(m)
             else:
                 
                 count = count
@@ -174,4 +174,4 @@ def StaticCheckBad(Vmove,Opos,th):
         print(m)
         m=m+1
     
-    return count,index
+    return count,np.asarray(index)
