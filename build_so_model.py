@@ -99,3 +99,41 @@ def train_model(train_data,train_target,model,k=2,num_epochs = 100):
 
     return all_mae_histories
 
+
+
+
+def train_model_FF(train_data,train_target,val_data,val_target,num_epochs = 100, lr=.1):
+
+    """
+    Train with a FeedForward neural network model. 
+
+    
+
+    :param kind: layer_units, activation function type, dropout, learning rate.
+    :raise: If the kind is invalid.
+    :return: Bad move counts, Array of indices for bad trajectories.
+    :rtype: keras model
+
+    """
+    all_mae_histories = []
+    
+    model = keras.Sequential()
+    model.add(layers.Flatten())
+    model.add(layers.Dense(12,activation='relu')   ) # extra layer 1
+    model.add(layers.Dense(24,activation='relu')   )# extra layer 2
+    model.add(layers.Dense(48,activation='relu')   )# extra layer 3
+    model.add(layers.Dense(36,activation='relu')   ) # extra layer 3
+    model.add(layers.Dense(1)) # extra layer 4
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate=lr),
+        loss='mse', metrics=['mae'],
+    )
+    
+    history = model.fit(train_data,train_target,
+    validation_data=(val_data, val_target),
+    epochs=num_epochs, batch_size=120, verbose=0)
+    mae_history = history.history['mae']
+    all_mae_histories.append(mae_history)
+    
+    return model, all_mae_histories
+

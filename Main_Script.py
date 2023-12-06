@@ -11,6 +11,7 @@ os.chdir(path)
 import dependencies
 from build_so_model import build_model
 from build_so_model import train_model
+from build_so_model import train_model_FF
 import pandas as pd
 import numpy as np
 
@@ -52,7 +53,7 @@ Test_Target2 = mytarget[halflength:inplength ,1]
 Test_Target3 = mytarget[halflength:inplength ,2]
 Test_Target4 = mytarget[halflength:inplength ,3]
 
-#%%
+#%% ------------------------------------------------------------ Dont Run This Cell
 
 
 df = pd.read_csv('StaticMoveData2.csv')  # import data
@@ -203,22 +204,23 @@ model4 = build_model(best_hps4[0])
 # # 
 # # =============================================================================
 
-all_mae_hist1 = train_model(Training_Input, Training_Target1,model1,k=2,num_epochs = 100)
-all_mae_hist2 = train_model(Training_Input, Training_Target2,model2,k=2,num_epochs = 100)
-all_mae_hist3 = train_model(Training_Input, Training_Target3,model3,k=2,num_epochs = 100)
-all_mae_hist4 = train_model(Training_Input, Training_Target4,model4,k=2,num_epochs = 100)
+#%%
+model1,all_mae_hist1 = train_model_FF(Training_Input, Training_Target1,Test_Input,Test_Target1,num_epochs = 100, lr=.1)
+model2,all_mae_hist2 = train_model_FF(Training_Input, Training_Target2,Test_Input,Test_Target2,num_epochs = 100, lr=.1)
+model3,all_mae_hist3 = train_model_FF(Training_Input, Training_Target3,Test_Input,Test_Target3,num_epochs = 100, lr=.1)
+model4,all_mae_hist4 = train_model_FF(Training_Input, Training_Target4,Test_Input,Test_Target4,num_epochs = 100, lr=.1)
 
 
 # =============================================================================
 # SAVE MODEL
 # =============================================================================
-model1.save('my_newmodel1') # Save Model
+model1.save('my_newFFmodel1') # Save Model
 
-model2.save('my_newmodel2') # Save Model
+model2.save('my_newFFmodel2') # Save Model
 
-model3.save('my_newmodel3') # Save Model
+model3.save('my_newFFmodel3') # Save Model
 
-model4.save('my_newmodel4') # Save Model
+model4.save('my_newFFmodel4') # Save Model
 
 
 
