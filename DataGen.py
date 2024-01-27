@@ -169,7 +169,7 @@ def Gen_MoveC2(rawinp,rawtarget,i,parts=100):
     Trajectory array.
 
     '''
-    i=100
+    #i=100
     I  = np.array([rawinp[i,0],rawinp[i,1]])
     M1 = np.array([rawtarget[i,0],rawtarget[i,1]])
     M2 = np.array([rawtarget[i,2],rawtarget[i,3]])

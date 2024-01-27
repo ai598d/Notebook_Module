@@ -41,8 +41,8 @@ from compare import StaticCheckBad
 #%%
 
 # Generate Dataset
-
-BCrangeArray = np.array([[1,190], [300,500], [501,700],[801,999],[210,290],[300,500],[501,700],[701,799]]) # range 
+#[VI,VM1,VM2,VG,OI,OM1,OM2,OG1]
+BCrangeArray = np.array([[1,190], [300,500], [501,700],[801,999],[0,999],[300,500],[501,700],[701,799]]) # range 
 data = Data_Array(BCrangeArray,200000)
 
 #%%
@@ -70,7 +70,7 @@ datacolumns = np.array(["VIX1","VIX2", "VM1X1","VM1X2", "VM2X1","VM2X2","VGX1","
 dataframe= pd.DataFrame(scale_data ,columns=datacolumns)
 
 #%%
-dataframe.to_csv('TD_11252023.csv', index=False) # save Train data as excel |MoveData#| |MoveTestData# |
+dataframe.to_csv('TD_01232024.csv', index=False) # save Train data as excel |MoveData#| |MoveTestData# |
 
 #%%
 

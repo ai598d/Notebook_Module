@@ -71,13 +71,22 @@ rand_model3 = call_existing_code (10,'relu',.1, 1e-1)
 rand_model4 = call_existing_code (10,'relu',.1, 1e-1)
 
 # =============================================================================
-# LOAD LEARNED MODEL
+# LOAD LEARNED FF MODEL
 # =============================================================================
 
 learned_model1 = keras.models.load_model('my_newFFmodel1')  # LOAD MODEL
 learned_model2 = keras.models.load_model('my_newFFmodel2')  # LOAD MODEL
 learned_model3 = keras.models.load_model('my_newFFmodel3')  # LOAD MODEL
 learned_model4 = keras.models.load_model('my_newFFmodel4')  # LOAD MODEL
+
+# =============================================================================
+# LOAD LEARNED WD MODEL
+# =============================================================================
+
+#learned_model1 = keras.models.load_model('my_newWDmodel1')  # LOAD MODEL
+#learned_model2 = keras.models.load_model('my_newWDmodel2')  # LOAD MODEL
+#learned_model3 = keras.models.load_model('my_newWDmodel3')  # LOAD MODEL
+#learned_model4 = keras.models.load_model('my_newWDmodel4')  # LOAD MODEL
 
 
 
@@ -185,7 +194,7 @@ Lc = []
 
 Rc = []
 
-th = np.linspace(0,1,50)
+th = np.linspace(0,.6,10)
 
 i = 0
 

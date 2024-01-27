@@ -12,32 +12,80 @@ import dependencies
 from build_so_model import build_model
 from build_so_model import train_model
 from build_so_model import train_model_FF
+from build_so_model import train_model_WidenDeep
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
 from DataGen import Data_Array
 from DataGen import Scale_Data
 from DataGen import Filter_Good_Data
 from DataGen import CSV_to_DataArray
+from DataGen import Generate_All_MoveC2
+from DataGen import Gen_MoveC2
 from command import Cmove2
 from compare import StaticCheckBad
 #%%
 
 
-myinput,mytarget = CSV_to_DataArray('TD_11252023.csv',array=True)
+myinput,mytarget = CSV_to_DataArray('TD_01232024.csv',array=True)
 
+plt.hist(myinput[4])
+#%%
 parts = 100
-th = .1
+th = np.linspace(.1,.6,6)
 
-good_input, good_target, count = Filter_Good_Data(myinput,mytarget,parts,th)
+All_Good_Input = []
+
+All_Good_Target = []
+
+All_Count = []
+
+i=0
+
+while(i<6):
+    
+    good_input, good_target, count = Filter_Good_Data(myinput,mytarget,parts,th[i])
+    
+    All_Good_Input.append(good_input)
+    All_Good_Target.append(good_target)
+    All_Count.append(count)
+    
+    i=i+1
+    
+#%%
+
+bad_moves_count = np.asarray(All_Count)
+
+good_move_counts = len(myinput)-bad_moves_count # will be using this to seperate data by threshold
+    
+#%%
+
+# consolidate into a single data array 
+
+j = 1
+
+Good_Input_DataArray  = All_Good_Input[0]
+Good_Target_DataArray = All_Good_Target[0]
+
+while(j<len(All_Good_Input)):
+    
+    Good_Input_DataArray = np.concatenate( (Good_Input_DataArray,All_Good_Input[j]),axis=0)    
+
+    Good_Target_DataArray = np.concatenate((Good_Target_DataArray,All_Good_Target[j]),axis=0)   
+    
+    j=j+1
+    
+   
+
+    
 
 
 #%%
 
-myinput = good_input
-mytarget= good_target
+myinput = Good_Input_DataArray[0:142848]
+mytarget= Good_Target_DataArray[0:142848]
 
-inplength = len(good_input)
+inplength = len(myinput)
 halflength = int(inplength/2)
 
 
@@ -52,6 +100,17 @@ Test_Target1 = mytarget[halflength:inplength ,0]
 Test_Target2 = mytarget[halflength:inplength ,1]
 Test_Target3 = mytarget[halflength:inplength ,2]
 Test_Target4 = mytarget[halflength:inplength ,3]
+
+
+#%%
+# training data trajectory
+index= 10
+Train_Traj = Gen_MoveC2(myinput, mytarget,index,10)
+
+plt.plot(Train_Traj[0],Train_Traj[1],'*')
+
+plt.plot(myinput[index,4],myinput[index,4],'X')
+
 
 #%% ------------------------------------------------------------ Dont Run This Cell
 
@@ -204,13 +263,13 @@ model4 = build_model(best_hps4[0])
 # # 
 # # =============================================================================
 
-#%%
+#%% Feed Forward
 model1,all_mae_hist1 = train_model_FF(Training_Input, Training_Target1,Test_Input,Test_Target1,num_epochs = 100, lr=.1)
 model2,all_mae_hist2 = train_model_FF(Training_Input, Training_Target2,Test_Input,Test_Target2,num_epochs = 100, lr=.1)
 model3,all_mae_hist3 = train_model_FF(Training_Input, Training_Target3,Test_Input,Test_Target3,num_epochs = 100, lr=.1)
 model4,all_mae_hist4 = train_model_FF(Training_Input, Training_Target4,Test_Input,Test_Target4,num_epochs = 100, lr=.1)
 
-
+#%%
 # =============================================================================
 # SAVE MODEL
 # =============================================================================
@@ -221,6 +280,27 @@ model2.save('my_newFFmodel2') # Save Model
 model3.save('my_newFFmodel3') # Save Model
 
 model4.save('my_newFFmodel4') # Save Model
+
+
+#%% Wide and Deep
+
+model1,all_mae_hist1 = train_model_WidenDeep(Training_Input, Training_Target1,Test_Input,Test_Target1,num_epochs = 100, lr=.1)
+model2,all_mae_hist2 = train_model_WidenDeep(Training_Input, Training_Target2,Test_Input,Test_Target2,num_epochs = 100, lr=.1)
+model3,all_mae_hist3 = train_model_WidenDeep(Training_Input, Training_Target3,Test_Input,Test_Target3,num_epochs = 100, lr=.1)
+model4,all_mae_hist4 = train_model_WidenDeep(Training_Input, Training_Target4,Test_Input,Test_Target4,num_epochs = 100, lr=.1)
+
+
+#%%
+# =============================================================================
+# SAVE MODEL
+# =============================================================================
+model1.save('my_newWDmodel1') # Save Model
+
+model2.save('my_newWDmodel2') # Save Model
+
+model3.save('my_newWDmodel3') # Save Model
+
+model4.save('my_newWDmodel4') # Save Model
 
 
 
